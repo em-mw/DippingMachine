@@ -217,7 +217,63 @@ class Ui_MainWindow(object):
         self.doubleSpinBox_rotate.valueChanged.connect(lambda:self.listWidget.item(2).setText(f"Rotate {self.doubleSpinBox_rotate.value()}"))
         self.doubleSpinBox_wait.valueChanged.connect(lambda:self.listWidget.item(3).setText(f"Wait {self.doubleSpinBox_wait.value()}"))
 
-        self.commandLinkButton.clicked.connect(lambda:print(f"{[self.listWidget_2.item(i).text() for i in range(self.listWidget_2.count())]} count:{self.listWidget_2.count()}"))
+        self.commandLinkButton.clicked.connect(lambda:self.programmer())
+
+    def programmer(self):
+        print(f"{[self.listWidget_2.item(i).text() for i in range(self.listWidget_2.count())]} count:{self.listWidget_2.count()}")
+        with open(f"p{self.spinBox.value()}.py", 'w') as pf:
+            pf.write("""
+import time, busio, digitalio, board
+from lcd.lcd import LCD
+from lcd.i2c_pcf8574_interface import I2CPCF8574Interface
+import KeyPad
+import os
+""")
+            pf.write("def main(step_pin_dip, dir_pin_dip, step_pin_rot, dir_pin_rot):\n")
+            for i in [self.listWidget_2.item(i).text() for i in range(self.listWidget_2.count())]:
+                cmd_par = i.split(" ")
+                step_delay = (((float(cmd_par[1]))*.00158245)+.000341841)
+                print(step_delay)
+                if step_delay < .001:
+                    step_delay = 0.001  # Delay between steps in seconds (adjust for speed)
+                microMode = 8
+                # full rotation multiplied by the microstep divider
+                step_count_dip=600*microMode//8
+                step_count_rot = 200 * microMode//1
+                if cmd_par[0] == "Dip":
+                    print("dip")
+                    pf.write(
+                        f"""
+    dir_pin_dip.value = True
+    for _ in range({step_count_dip}):
+        step_pin_dip.value = True
+        time.sleep({step_delay})
+        step_pin_dip.value = False
+""")
+                elif cmd_par[0] == "Undip":
+                    print("undip")
+                    pf.write(
+                    f"""
+    dir_pin_dip.value = False
+    for _ in range({step_count_dip}):
+        step_pin_dip.value = True
+        time.sleep({step_delay})
+        step_pin_dip.value = False
+""")
+                elif cmd_par[0] == "Rotate":
+                    print("rotate")
+                    pf.write(
+                    f"""
+    for _ in range({int(cmd_par[1][:cmd_par[1].find('.')])}):
+        dir_pin_dip.value = False
+        for _ in range({step_count_dip}):
+            step_pin_rot.value = True
+            time.sleep(0.001)
+            step_pin_rot.value = False
+""")
+                elif cmd_par[0] == "Wait":
+                    print("wait")
+                    pf.write(f"\n    time.sleep({float(cmd_par[1])})\n")
 
 if __name__ == "__main__":
     import sys
