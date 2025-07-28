@@ -67,20 +67,14 @@ class Ui_MainWindow(object):
         self.listWidget.setDragDropMode(QtWidgets.QAbstractItemView.DragDropMode.DragOnly)
         self.listWidget.setDefaultDropAction(QtCore.Qt.DropAction.CopyAction)
         self.listWidget.setObjectName("listWidget")
-        
         item = QtWidgets.QListWidgetItem()
-        
         self.listWidget.addItem(item)
-        
-
-        #item = QtWidgets.QListWidgetItem()
-        #self.listWidget.addItem(item)
-        #item = QtWidgets.QListWidgetItem()
-        #self.listWidget.addItem(item)
-        #item = QtWidgets.QListWidgetItem()
-        #self.listWidget.addItem(item)
-        #item = QtWidgets.QListWidgetItem()
-        #self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
         self.verticalLayout.addWidget(self.listWidget)
         self.horizontalLayout.addLayout(self.verticalLayout)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
@@ -144,27 +138,68 @@ class Ui_MainWindow(object):
         __sortingEnabled = self.listWidget.isSortingEnabled()
         self.listWidget.setSortingEnabled(False)
         item = self.listWidget.item(0)
-        #item.setText(_translate("MainWindow", "Dip"))
-        
+        item.setText(_translate("MainWindow", "Dip 0.0"))
         widget = QtWidgets.QWidget()
-        layout = QtWidgets.QVBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         layout.setContentsMargins(5, 5, 5, 5)
 
-        label = QtWidgets.QLabel("label_text")
-        button = QtWidgets.QPushButton("Click Me")
+        label = QtWidgets.QLabel("")
+        self.doubleSpinBox_dip = QtWidgets.QDoubleSpinBox()
 
         layout.addWidget(label)
-        layout.addWidget(button)
+        layout.addWidget(self.doubleSpinBox_dip)
         widget.setLayout(layout)
         item.setSizeHint(widget.sizeHint())
         self.listWidget.setItemWidget(item, widget)
 
-        #item = self.listWidget.item(1)
-        #item.setText(_translate("MainWindow", "Undip"))
-        #item = self.listWidget.item(2)
-        #item.setText(_translate("MainWindow", "Rotate"))
-        #item = self.listWidget.item(3)
-        #item.setText(_translate("MainWindow", "Wait"))
+        item = self.listWidget.item(1)
+        item.setText(_translate("MainWindow", "Undip 0.0"))
+
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QHBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+
+        label = QtWidgets.QLabel("")
+        self.doubleSpinBox_undip = QtWidgets.QDoubleSpinBox()
+
+        layout.addWidget(label)
+        layout.addWidget(self.doubleSpinBox_undip)
+        widget.setLayout(layout)
+        item.setSizeHint(widget.sizeHint())
+        self.listWidget.setItemWidget(item, widget)
+
+        item = self.listWidget.item(2) 
+        item.setText(_translate("MainWindow", "Rotate 0.0"))
+
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QHBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+
+        label = QtWidgets.QLabel("")
+        self.doubleSpinBox_rotate = QtWidgets.QDoubleSpinBox()
+
+        layout.addWidget(label)
+        layout.addWidget(self.doubleSpinBox_rotate)
+        widget.setLayout(layout)
+        item.setSizeHint(widget.sizeHint())
+        self.listWidget.setItemWidget(item, widget)
+
+        item = self.listWidget.item(3)
+        item.setText(_translate("MainWindow", "Wait 0.0"))
+
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QHBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+
+        label = QtWidgets.QLabel("")
+        self.doubleSpinBox_wait = QtWidgets.QDoubleSpinBox()
+
+        layout.addWidget(label)
+        layout.addWidget(self.doubleSpinBox_wait)
+        widget.setLayout(layout)
+        item.setSizeHint(widget.sizeHint())
+        self.listWidget.setItemWidget(item, widget)
+
         self.listWidget.setSortingEnabled(__sortingEnabled)
         self.pushButton_2.setText(_translate("MainWindow", "Delete Selected"))
         self.pushButton.setText(_translate("MainWindow", "Clear"))
@@ -175,12 +210,14 @@ class Ui_MainWindow(object):
         self.actionAbout.setText(_translate("MainWindow", "About"))
 
         self.pushButton.clicked.connect(lambda:self.listWidget_2.clear())
-        self.pushButton_2.clicked.connect(lambda:self.listWidget_2.takeItem(0))
-    
-    def dev(self):
-        pass
-            
-            
+        self.pushButton_2.clicked.connect(lambda:self.listWidget_2.takeItem(self.listWidget_2.currentRow()))
+
+        self.doubleSpinBox_dip.valueChanged.connect(lambda:self.listWidget.item(0).setText(f"Dip {self.doubleSpinBox_dip.value()}"))
+        self.doubleSpinBox_undip.valueChanged.connect(lambda:self.listWidget.item(1).setText(f"Undip {self.doubleSpinBox_undip.value()}"))
+        self.doubleSpinBox_rotate.valueChanged.connect(lambda:self.listWidget.item(2).setText(f"Rotate {self.doubleSpinBox_rotate.value()}"))
+        self.doubleSpinBox_wait.valueChanged.connect(lambda:self.listWidget.item(3).setText(f"Wait {self.doubleSpinBox_wait.value()}"))
+
+        self.commandLinkButton.clicked.connect(lambda:print(f"{[self.listWidget_2.item(i).text() for i in range(self.listWidget_2.count())]} count:{self.listWidget_2.count()}"))
 
 if __name__ == "__main__":
     import sys

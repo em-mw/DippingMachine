@@ -154,6 +154,9 @@
      </layout>
     </item>
     <item>
+     <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+    </item>
+    <item>
      <widget class="Line" name="line_2">
       <property name="frameShadow">
        <enum>QFrame::Shadow::Plain</enum>
@@ -182,6 +185,9 @@
        <widget class="QCommandLinkButton" name="commandLinkButton">
         <property name="text">
          <string>Start Programming to Program {x}</string>
+        </property>
+        <property name="default">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
